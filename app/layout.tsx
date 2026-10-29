@@ -24,20 +24,20 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Kilómetros con Propósito: Ecuador',
+  title: 'Kilómetros con Propósito · Fase piloto Ecuador',
   description:
     'Docuserie viva, estudio móvil y motor permanente de recaudación y alianzas para el servicio rotario en el Distrito 4400 de Ecuador.',
   openGraph: {
     title: 'Kilómetros con Propósito: Ecuador',
     description:
-      'Docuserie viva, estudio móvil y motor permanente de recaudación y alianzas para el servicio rotario en el Distrito 4400 de Ecuador.',
+      'Documentación audiovisual de proyectos rotarios en Ecuador durante seis meses, solo sábados y domingos. Fase piloto · Distrito 4400.',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Kilómetros con Propósito: Ecuador',
     description:
-      'Docuserie viva, estudio móvil y motor permanente de recaudación y alianzas para el servicio rotario en el Distrito 4400 de Ecuador.',
+      'Documentación audiovisual de proyectos rotarios en Ecuador durante seis meses, solo sábados y domingos. Fase piloto · Distrito 4400.',
   },
 };
 

@@ -1,6 +1,6 @@
 {
   "name": "Kilómetros con Propósito: Ecuador",
-  "description": "Docuserie viva, estudio móvil y motor permanente de recaudación y alianzas para el servicio rotario en el Distrito 4400 de Ecuador.",
+  "description": "Documentación audiovisual de proyectos rotarios en Ecuador durante seis meses, solo sábados y domingos. Fase piloto · Distrito 4400.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
