@@ -1,5 +1,6 @@
 import type {Metadata} from 'next';
 import {Outfit, Plus_Jakarta_Sans, JetBrains_Mono} from 'next/font/google';
+import {LanguageProvider} from '@/lib/i18n/context';
 import './globals.css';
 
 const outfit = Outfit({
@@ -52,7 +53,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         className="bg-[#F8FAFC] text-[#0A2540] antialiased selection:bg-[#F59E0B]/20 selection:text-[#0A2540]"
         style={{fontFamily: 'var(--font-jakarta), sans-serif'}}
       >
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

@@ -9,28 +9,22 @@ import ConvocatoriaSection, {
   ConvocatoriaRole,
 } from '@/components/ConvocatoriaSection';
 import {
-  COMMITMENTS,
   CONTINGENCY_USD,
+  FORMAT_IDS,
   FormatId,
-  GOALS,
-  HERO_FACTS,
   OPERATION_BUDGET,
   OPERATION_MONTHLY_USD,
   OPERATION_TOTAL_USD,
-  OUTCOMES,
   PREP_BUDGET,
   PREP_TOTAL_USD,
-  PRODUCTION_FORMATS,
   PRODUCTION_PACKAGE,
   PRODUCTION_PACKAGE_USD,
   PROPOSAL_PDF_URL,
   SUBTOTAL_USD,
-  SUPPORT_MODALITIES,
-  TEAM,
+  TEAM_NAMES,
   TOTAL_BUDGET_USD,
-  VISIT_FLOW,
-  formatUsd,
 } from '@/lib/expedition-data';
+import {useLang} from '@/lib/i18n/context';
 
 const headingFont = {fontFamily: 'var(--font-outfit), sans-serif'};
 
@@ -62,6 +56,7 @@ function SectionHeader({
 }
 
 export default function HomePage() {
+  const {t, formatUsd} = useLang();
   const [convocatoriaRole, setConvocatoriaRole] =
     useState<ConvocatoriaRole>('club');
   const [prefilledFormat, setPrefilledFormat] = useState<FormatId | undefined>();
@@ -87,7 +82,7 @@ export default function HomePage() {
           <div className="absolute inset-0">
             <Image
               src="/assets/aistudio/image_8e5d8680.png"
-              alt="Soledad Hernández junto a la van Citroën Jumpy en los Andes ecuatorianos"
+              alt={t.hero.imageAlt}
               fill
               priority
               className="object-cover object-center"
@@ -98,19 +93,16 @@ export default function HomePage() {
 
           <div className="relative max-w-[1120px] w-full mx-auto px-4 sm:px-6 pt-16 pb-12 md:pt-24">
             <p className="text-xs font-mono uppercase tracking-wider text-[#F59E0B] mb-4">
-              Fase piloto · Ecuador · Distrito 4400
+              {t.hero.eyebrow}
             </p>
             <h1
               className="font-bold tracking-tight leading-[1.05] text-balance max-w-3xl"
               style={{...headingFont, fontSize: 'clamp(2.4rem, 5vw, 4.25rem)'}}
             >
-              Kilómetros con Propósito
+              {t.hero.title}
             </h1>
             <p className="mt-5 text-base md:text-xl text-slate-200 leading-relaxed max-w-2xl">
-              Una iniciativa audiovisual que recorrerá el Ecuador durante seis
-              meses, exclusivamente los sábados y domingos, documentando
-              proyectos, testimonios e historias que demuestran cómo el
-              Rotarismo transforma vidas.
+              {t.hero.intro}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <button
@@ -118,7 +110,7 @@ export default function HomePage() {
                 onClick={() => goToConvocatoria('club')}
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#F59E0B] hover:bg-[#FF8A00] text-[#0A2540] font-bold text-sm transition-colors cursor-pointer"
               >
-                Postular un proyecto
+                {t.hero.ctaApply}
                 <ArrowRight className="w-4 h-4" />
               </button>
               <a
@@ -128,14 +120,14 @@ export default function HomePage() {
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl border border-white/30 hover:bg-white/10 font-semibold text-sm transition-colors"
               >
                 <FileText className="w-4 h-4" />
-                Ver la propuesta (PDF)
+                {t.hero.ctaPdf}
               </a>
             </div>
           </div>
 
           <div className="relative border-t border-white/15 bg-[#0A2540]/80 backdrop-blur-sm">
             <dl className="max-w-[1120px] mx-auto px-4 sm:px-6 py-6 grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {HERO_FACTS.map((f) => (
+              {t.hero.facts.map((f) => (
                 <div key={f.label}>
                   <dt className="text-xs text-slate-300 order-2">{f.label}</dt>
                   <dd className="text-xl md:text-2xl font-bold font-mono tabular-nums text-white mt-0.5">
@@ -151,12 +143,12 @@ export default function HomePage() {
         <section id="propuesta" className="py-20 md:py-28 bg-white border-b border-slate-200">
           <div className="max-w-[1120px] mx-auto px-4 sm:px-6">
             <SectionHeader
-              index="01 · La propuesta"
-              title="Convertir cada historia de servicio en una oportunidad para sumar."
-              intro="A través de YouTube y redes sociales, las experiencias documentadas se convierten en historias capaces de inspirar, generar confianza, atraer voluntarios, conseguir donaciones y abrir nuevas alianzas."
+              index={t.proposal.index}
+              title={t.proposal.title}
+              intro={t.proposal.intro}
             />
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-              {OUTCOMES.map((o) => (
+              {t.proposal.outcomes.map((o) => (
                 <div key={o.audience} className="border-t-2 border-[#F59E0B] pt-5">
                   <h3 className="text-lg font-bold" style={headingFont}>
                     {o.audience}
@@ -171,18 +163,17 @@ export default function HomePage() {
               <div className="md:col-span-3 relative h-28">
                 <Image
                   src="/assets/aistudio/image_29e4428b.png"
-                  alt="Emblema de Kilómetros con Propósito"
+                  alt={t.proposal.emblemAlt}
                   fill
                   className="object-contain"
                 />
               </div>
               <p className="md:col-span-9 text-base text-slate-700 leading-relaxed">
-                El recorrido se realiza en una{' '}
-                <strong>van Citroën Jumpy adaptada para viajes overland</strong>,
-                base móvil de desplazamiento y producción audiovisual. Ecuador
-                es la <strong>fase piloto</strong> de un proyecto con proyección
-                internacional, que solo se formulará después de evaluar el
-                piloto.
+                {t.proposal.vanBefore}
+                <strong>{t.proposal.vanStrong}</strong>
+                {t.proposal.vanMiddle}
+                <strong>{t.proposal.vanStrong2}</strong>
+                {t.proposal.vanAfter}
               </p>
             </div>
           </div>
@@ -192,45 +183,48 @@ export default function HomePage() {
         <section id="formatos" className="py-20 md:py-28 bg-[#F8FAFC] border-b border-slate-200">
           <div className="max-w-[1120px] mx-auto px-4 sm:px-6">
             <SectionHeader
-              index="02 · Cómo documentamos"
-              title="Tres formatos según la fase de cada proyecto."
-              intro="Cada episodio cierra con una lección aprendida —¿cómo replicar este proyecto en otro club?— que se guarda en la web como repositorio para futuras iniciativas."
+              index={t.formats.index}
+              title={t.formats.title}
+              intro={t.formats.intro}
             />
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-5">
-              {PRODUCTION_FORMATS.map((f) => (
-                <article
-                  key={f.id}
-                  className="flex flex-col rounded-2xl bg-white border border-slate-200 p-6"
-                >
-                  <p className="text-xs font-mono text-[#F59E0B] font-semibold">
-                    FORMATO {f.index}
-                  </p>
-                  <h3 className="mt-2 text-xl font-bold" style={headingFont}>
-                    {f.name}
-                  </h3>
-                  <p className="mt-1 text-xs font-medium text-[#3B6E5C]">{f.stage}</p>
-                  <p className="mt-4 text-sm text-slate-600 leading-relaxed flex-1">
-                    {f.description}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => goToConvocatoria('club', f.id)}
-                    className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#003B73] hover:underline underline-offset-4 cursor-pointer self-start"
+              {FORMAT_IDS.map((f) => {
+                const text = t.formats.items[f.id];
+                return (
+                  <article
+                    key={f.id}
+                    className="flex flex-col rounded-2xl bg-white border border-slate-200 p-6"
                   >
-                    Postular con este formato
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </article>
-              ))}
+                    <p className="text-xs font-mono text-[#F59E0B] font-semibold">
+                      {t.formats.formatLabel} {f.index}
+                    </p>
+                    <h3 className="mt-2 text-xl font-bold" style={headingFont}>
+                      {text.name}
+                    </h3>
+                    <p className="mt-1 text-xs font-medium text-[#3B6E5C]">{text.stage}</p>
+                    <p className="mt-4 text-sm text-slate-600 leading-relaxed flex-1">
+                      {text.description}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => goToConvocatoria('club', f.id)}
+                      className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-[#003B73] hover:underline underline-offset-4 cursor-pointer self-start"
+                    >
+                      {t.formats.apply}
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </article>
+                );
+              })}
             </div>
 
             <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div>
                 <h3 className="text-xl font-bold" style={headingFont}>
-                  Flujo de trabajo por visita
+                  {t.formats.flowTitle}
                 </h3>
                 <ol className="mt-5 space-y-3">
-                  {VISIT_FLOW.map((step, i) => (
+                  {t.formats.flow.map((step, i) => (
                     <li key={i} className="flex gap-4 text-sm text-slate-700 leading-relaxed">
                       <span className="font-mono font-semibold text-[#003B73] shrink-0">
                         {i + 1}.
@@ -243,28 +237,18 @@ export default function HomePage() {
               <div className="space-y-8">
                 <div>
                   <h3 className="text-xl font-bold" style={headingFont}>
-                    Formato editorial
+                    {t.formats.editorialTitle}
                   </h3>
                   <p className="mt-3 text-sm text-slate-700 leading-relaxed">
-                    Episodios principales de 8 a 15 minutos con las voces de
-                    quienes participan y un llamado a la acción específico.
-                    Videos cortos de 30 a 90 segundos que llevan al episodio y
-                    al contacto del proyecto. Subtítulos en español y, cuando
-                    los recursos lo permitan, en inglés.
+                    {t.formats.editorialText}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-xl font-bold" style={headingFont}>
-                    De la visibilidad a la participación
+                    {t.formats.participationTitle}
                   </h3>
                   <p className="mt-3 text-sm text-slate-700 leading-relaxed">
-                    La web tendrá pasarelas de pago permanentes conectadas a
-                    perfiles por proyecto: un video del mes 1 puede seguir
-                    recaudando en el mes 6 y después. Las donaciones a proyectos
-                    van directo a mecanismos oficiales verificados por sus
-                    responsables, separadas de los aportes para el recorrido.
-                    No se prometen beneficios tributarios ni montos de
-                    recaudación.
+                    {t.formats.participationText}
                   </p>
                 </div>
               </div>
@@ -279,31 +263,35 @@ export default function HomePage() {
         <section id="presupuesto" className="py-20 md:py-28 bg-[#F8FAFC] border-b border-slate-200">
           <div className="max-w-[1120px] mx-auto px-4 sm:px-6">
             <SectionHeader
-              index="04 · Presupuesto preliminar"
-              title={`USD ${formatUsd(TOTAL_BUDGET_USD, 2)} para seis meses.`}
-              intro="Referencia para una persona en Ecuador continental, cuatro fines de semana por mes y ocho días de actividad. Supone la van disponible y adaptada. No son cotizaciones ni compromisos de proveedores."
+              index={t.budget.index}
+              title={t.budget.title(formatUsd(TOTAL_BUDGET_USD, 2))}
+              intro={t.budget.intro}
             />
 
             <div className="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-10">
               <div className="lg:col-span-8">
                 <h3 className="text-lg font-bold" style={headingFont}>
-                  Operación estimada
+                  {t.budget.operationTitle}
                 </h3>
                 <div className="mt-4 overflow-x-auto">
                   <table className="w-full min-w-[520px] text-sm text-left">
                     <thead>
                       <tr className="border-b border-slate-300 text-xs font-mono uppercase tracking-wider text-slate-500">
-                        <th className="py-3 pr-4 font-medium">Rubro</th>
-                        <th className="py-3 pr-4 font-medium text-right">Mes</th>
-                        <th className="py-3 font-medium text-right">6 meses</th>
+                        <th className="py-3 pr-4 font-medium">{t.budget.itemCol}</th>
+                        <th className="py-3 pr-4 font-medium text-right">{t.budget.monthCol}</th>
+                        <th className="py-3 font-medium text-right">{t.budget.sixMonthsCol}</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {OPERATION_BUDGET.map((l) => (
-                        <tr key={l.label} className="border-b border-slate-200 align-top">
+                      {OPERATION_BUDGET.map((l, i) => (
+                        <tr key={i} className="border-b border-slate-200 align-top">
                           <td className="py-3 pr-4">
-                            <p className="font-medium text-[#0A2540]">{l.label}</p>
-                            <p className="text-xs text-slate-500 mt-0.5">{l.basis}</p>
+                            <p className="font-medium text-[#0A2540]">
+                              {t.budget.operation[i].label}
+                            </p>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              {t.budget.operation[i].basis}
+                            </p>
                           </td>
                           <td className="py-3 pr-4 text-right font-mono tabular-nums">
                             {formatUsd(l.monthlyUsd ?? 0)}
@@ -314,7 +302,7 @@ export default function HomePage() {
                         </tr>
                       ))}
                       <tr className="font-semibold">
-                        <td className="py-3 pr-4">Total de operación</td>
+                        <td className="py-3 pr-4">{t.budget.operationTotal}</td>
                         <td className="py-3 pr-4 text-right font-mono tabular-nums">
                           {formatUsd(OPERATION_MONTHLY_USD)}
                         </td>
@@ -327,20 +315,20 @@ export default function HomePage() {
                 </div>
 
                 <h3 className="mt-12 text-lg font-bold" style={headingFont}>
-                  Preparación y equipo
+                  {t.budget.prepTitle}
                 </h3>
                 <table className="mt-4 w-full text-sm text-left">
                   <tbody>
-                    {PREP_BUDGET.map((l) => (
-                      <tr key={l.label} className="border-b border-slate-200">
-                        <td className="py-3 pr-4">{l.label}</td>
+                    {PREP_BUDGET.map((l, i) => (
+                      <tr key={i} className="border-b border-slate-200">
+                        <td className="py-3 pr-4">{t.budget.prep[i]}</td>
                         <td className="py-3 text-right font-mono tabular-nums">
                           {formatUsd(l.totalUsd)}
                         </td>
                       </tr>
                     ))}
                     <tr className="font-semibold">
-                      <td className="py-3 pr-4">Total inicial</td>
+                      <td className="py-3 pr-4">{t.budget.prepTotal}</td>
                       <td className="py-3 text-right font-mono tabular-nums">
                         {formatUsd(PREP_TOTAL_USD)}
                       </td>
@@ -348,23 +336,21 @@ export default function HomePage() {
                   </tbody>
                 </table>
                 <p className="mt-3 text-xs text-slate-500 leading-relaxed">
-                  Provisiones propias pendientes de cotización; se descontarán
-                  los equipos ya disponibles. No incluye reparaciones mayores ni
-                  una nueva adaptación de la van.
+                  {t.budget.prepNote}
                 </p>
               </div>
 
               <aside className="lg:col-span-4 space-y-6">
                 <div className="rounded-2xl bg-[#0A2540] text-white p-6">
                   <p className="text-xs font-mono uppercase tracking-wider text-[#F59E0B]">
-                    Escenario 6 meses · USD
+                    {t.budget.scenarioTitle}
                   </p>
                   <dl className="mt-4 space-y-2.5 text-sm">
                     {[
-                      ['Operación acumulada', OPERATION_TOTAL_USD],
-                      ['Preparación y equipo', PREP_TOTAL_USD],
-                      ['Subtotal', SUBTOTAL_USD],
-                      ['Contingencia 15 %', CONTINGENCY_USD],
+                      [t.budget.cumulativeOperation, OPERATION_TOTAL_USD],
+                      [t.budget.prepAndEquipment, PREP_TOTAL_USD],
+                      [t.budget.subtotal, SUBTOTAL_USD],
+                      [t.budget.contingency, CONTINGENCY_USD],
                     ].map(([label, value]) => (
                       <div key={label as string} className="flex justify-between gap-4">
                         <dt className="text-slate-300">{label}</dt>
@@ -374,7 +360,7 @@ export default function HomePage() {
                       </div>
                     ))}
                     <div className="flex justify-between gap-4 pt-3 mt-3 border-t border-white/15 text-base font-bold">
-                      <dt>Total estimado</dt>
+                      <dt>{t.budget.estimatedTotal}</dt>
                       <dd className="font-mono tabular-nums text-[#F59E0B]">
                         {formatUsd(TOTAL_BUDGET_USD, 2)}
                       </dd>
@@ -384,12 +370,12 @@ export default function HomePage() {
 
                 <div className="rounded-2xl bg-white border border-slate-200 p-6">
                   <h3 className="text-base font-bold" style={headingFont}>
-                    Paquete de producción · USD {formatUsd(PRODUCTION_PACKAGE_USD)}
+                    {t.budget.packageTitle(formatUsd(PRODUCTION_PACKAGE_USD))}
                   </h3>
                   <ul className="mt-3 space-y-1.5 text-sm text-slate-700">
-                    {PRODUCTION_PACKAGE.map((l) => (
-                      <li key={l.label} className="flex justify-between gap-4">
-                        <span>{l.label}</span>
+                    {PRODUCTION_PACKAGE.map((l, i) => (
+                      <li key={i} className="flex justify-between gap-4">
+                        <span>{t.budget.package[i]}</span>
                         <span className="font-mono tabular-nums">
                           {formatUsd(l.totalUsd)}
                         </span>
@@ -397,17 +383,12 @@ export default function HomePage() {
                     ))}
                   </ul>
                   <p className="mt-3 text-xs text-slate-500 leading-relaxed">
-                    Opción de apoyo que forma parte del total anterior y no se
-                    suma a él. Puede financiarse parcialmente o cubrirse en
-                    especie.
+                    {t.budget.packageNote}
                   </p>
                 </div>
 
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Los apoyos en especie se descuentan de la necesidad de
-                  efectivo sin contarlos dos veces. Financiación propia,
-                  patrocinios y aportes institucionales están por definir. Los
-                  ingresos de YouTube no se incluyen como fuente del piloto.
+                  {t.budget.inKindNote}
                 </p>
               </aside>
             </div>
@@ -418,13 +399,13 @@ export default function HomePage() {
         <section id="apoyos" className="py-20 md:py-28 bg-white border-b border-slate-200">
           <div className="max-w-[1120px] mx-auto px-4 sm:px-6">
             <SectionHeader
-              index="05 · Apoyos y metas"
-              title="Lo que se solicita y cómo se medirá."
-              intro="Se solicita el aval institucional del Distrito, el acercamiento con los clubes y sus proyectos, y la posibilidad de gestionar apoyos en especie, difusión y patrocinio, sin comprometer recursos económicos del Distrito."
+              index={t.support.index}
+              title={t.support.title}
+              intro={t.support.intro}
             />
 
             <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-              {SUPPORT_MODALITIES.map((m) => (
+              {t.support.modalities.map((m) => (
                 <div key={m.name} className="border-t-2 border-[#003B73] pt-4">
                   <h3 className="text-sm font-bold">{m.name}</h3>
                   <p className="mt-2 text-sm text-slate-600 leading-relaxed">
@@ -436,35 +417,33 @@ export default function HomePage() {
 
             <div className="mt-10 rounded-2xl bg-[#F8FAFC] border border-slate-200 p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
               <p className="text-sm text-slate-700 leading-relaxed max-w-2xl">
-                <strong>Incentivos para donantes y aliados:</strong> menciones
-                destacadas en los créditos de los episodios o el logotipo de la
-                empresa o del club en el vinilado exterior de la van. Ningún
-                patrocinio condiciona testimonios ni afirmaciones de impacto.
+                <strong>{t.support.incentivesLabel}</strong>
+                {t.support.incentivesText}
               </p>
               <button
                 type="button"
                 onClick={() => goToConvocatoria('aliado')}
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#003B73] hover:bg-[#0A2540] text-white text-sm font-semibold transition-colors shrink-0 cursor-pointer self-start md:self-auto"
               >
-                Ofrecer apoyo
+                {t.support.offerSupport}
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
 
             <h3 className="mt-16 text-xl font-bold" style={headingFont}>
-              Entregables y metas de seguimiento
+              {t.support.goalsTitle}
             </h3>
             <div className="mt-5 overflow-x-auto">
               <table className="w-full min-w-[620px] text-sm text-left">
                 <thead>
                   <tr className="border-b border-slate-300 text-xs font-mono uppercase tracking-wider text-slate-500">
-                    <th className="py-3 pr-4 font-medium">Indicador</th>
-                    <th className="py-3 pr-4 font-medium">Meta inicial</th>
-                    <th className="py-3 font-medium">Cómo se verifica</th>
+                    <th className="py-3 pr-4 font-medium">{t.support.indicatorCol}</th>
+                    <th className="py-3 pr-4 font-medium">{t.support.targetCol}</th>
+                    <th className="py-3 font-medium">{t.support.verificationCol}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {GOALS.map((g) => (
+                  {t.support.goals.map((g) => (
                     <tr key={g.indicator} className="border-b border-slate-200 align-top">
                       <td className="py-3 pr-4 font-medium">{g.indicator}</td>
                       <td className="py-3 pr-4 font-mono text-[#003B73]">{g.target}</td>
@@ -475,10 +454,7 @@ export default function HomePage() {
               </table>
             </div>
             <p className="mt-4 text-sm text-slate-600 leading-relaxed max-w-3xl">
-              Estas metas son propuestas, no garantías. Las metas de audiencia
-              se fijarán después del primer mes, con una línea base. No se
-              atribuirá al canal un resultado que la organización no pueda
-              confirmar.
+              {t.support.goalsNote}
             </p>
           </div>
         </section>
@@ -495,10 +471,10 @@ export default function HomePage() {
       <footer className="bg-[#0A2540] text-white">
         <div className="max-w-[1120px] mx-auto px-4 sm:px-6 py-16">
           <p className="text-xs font-mono uppercase tracking-wider text-[#F59E0B]">
-            Cuidado de las personas
+            {t.footer.careTitle}
           </p>
           <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {COMMITMENTS.map((c) => (
+            {t.footer.commitments.map((c) => (
               <div key={c.title}>
                 <h3 className="text-sm font-bold">{c.title}</h3>
                 <p className="mt-1.5 text-xs text-slate-300 leading-relaxed">
@@ -514,21 +490,15 @@ export default function HomePage() {
                 Kilómetros con Propósito
               </p>
               <ul className="mt-3 space-y-2">
-                {TEAM.map((t) => (
-                  <li key={t.name} className="text-xs text-slate-300">
-                    <strong className="text-white">{t.name}</strong> · {t.role}
+                {TEAM_NAMES.map((name, i) => (
+                  <li key={name} className="text-xs text-slate-300">
+                    <strong className="text-white">{name}</strong> · {t.footer.team[i]}
                   </li>
                 ))}
               </ul>
             </div>
             <div className="lg:col-span-7 text-xs text-slate-400 leading-relaxed space-y-3">
-              <p>
-                La iniciativa es coordinada por su proponente y no se presenta
-                como un programa oficial de Rotary sin la autorización
-                correspondiente. El canal tiene identidad propia y explica con
-                precisión los respaldos recibidos; el uso de nombres, logotipos
-                o distintivos se acuerda con sus titulares.
-              </p>
+              <p>{t.footer.disclaimer}</p>
               <a
                 href={PROPOSAL_PDF_URL}
                 target="_blank"
@@ -536,7 +506,7 @@ export default function HomePage() {
                 className="inline-flex items-center gap-1.5 text-slate-200 hover:text-white underline underline-offset-4"
               >
                 <FileText className="w-3.5 h-3.5" />
-                Propuesta completa (PDF, versión 26 de octubre de 2026)
+                {t.footer.pdfLink}
               </a>
             </div>
           </div>

@@ -2,11 +2,9 @@
 
 import React, {useState} from 'react';
 import {ArrowRight, CheckCircle2, AlertCircle, Loader2} from 'lucide-react';
-import {
-  FormatId,
-  PRODUCTION_FORMATS,
-  SUPPORT_MODALITIES,
-} from '@/lib/expedition-data';
+import {FORMAT_IDS, FormatId} from '@/lib/expedition-data';
+import {useLang} from '@/lib/i18n/context';
+import {es} from '@/lib/i18n/es';
 
 export type ConvocatoriaRole = 'club' | 'aliado';
 
@@ -20,20 +18,9 @@ type Status = 'idle' | 'sending' | 'success' | 'error';
 
 const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID;
 
-const PROJECT_PHASES = ['Planificación', 'Ejecución activa', 'Post-ejecución'];
-const PROJECT_NEEDS = [
-  'Voluntariado',
-  'Donaciones',
-  'Nuevos socios',
-  'Alianzas',
-];
-const ALLY_TYPES = [
-  'Empresa',
-  'Institución',
-  'Club o grupo rotario',
-  'Persona',
-];
-
+// Los valores que recibe el formulario salen siempre del diccionario en español
+// (`es`), para que las respuestas lleguen homogéneas sin importar el idioma
+// de la interfaz; el diccionario activo solo aporta el texto visible.
 const inputClass =
   'w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-[#0A2540] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#003B73]/30 focus:border-[#003B73]';
 const labelClass = 'block text-sm font-medium text-slate-700 mb-1.5';
@@ -60,6 +47,8 @@ export default function ConvocatoriaSection({
   onRoleChange,
   prefilledFormat,
 }: ConvocatoriaSectionProps) {
+  const {lang, t} = useLang();
+  const c = t.convocatoria;
   const [status, setStatus] = useState<Status>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [format, setFormat] = useState<string>(prefilledFormat ?? '');
@@ -84,9 +73,7 @@ export default function ConvocatoriaSection({
 
     if (!FORMSPREE_ID) {
       setStatus('error');
-      setErrorMessage(
-        'El formulario aún no está conectado. Falta configurar NEXT_PUBLIC_FORMSPREE_ID.'
-      );
+      setErrorMessage(c.errorNoId);
       return;
     }
 
@@ -105,15 +92,13 @@ export default function ConvocatoriaSection({
       setStatus('success');
     } catch {
       setStatus('error');
-      setErrorMessage(
-        'No pudimos enviar el formulario. Inténtalo de nuevo en unos minutos.'
-      );
+      setErrorMessage(c.errorSend);
     }
   };
 
   const tabs: {id: ConvocatoriaRole; label: string}[] = [
-    {id: 'club', label: 'Postular un proyecto'},
-    {id: 'aliado', label: 'Ofrecer apoyo'},
+    {id: 'club', label: c.tabClub},
+    {id: 'aliado', label: c.tabAlly},
   ];
 
   return (
@@ -121,23 +106,19 @@ export default function ConvocatoriaSection({
       <div className="max-w-[1120px] mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-10">
         <div className="lg:col-span-4">
           <p className="text-xs font-mono uppercase tracking-wider text-[#3B6E5C] mb-3">
-            06 · Convocatoria
+            {c.index}
           </p>
           <h2
             className="text-3xl md:text-4xl font-bold tracking-tight text-balance"
             style={{fontFamily: 'var(--font-outfit), sans-serif'}}
           >
-            Inscribe tu proyecto o súmate como aliado.
+            {c.title}
           </h2>
           <p className="mt-4 text-base text-slate-600 leading-relaxed">
-            No se excluyen proyectos por su estado actual: se seleccionan
-            iniciativas en planificación, ejecución activa o post-ejecución,
-            rotando formatos para dar oportunidad a más clubes.
+            {c.intro}
           </p>
           <p className="mt-4 text-sm text-slate-500 leading-relaxed">
-            La ficha recoge ubicación, organización responsable, problema
-            atendido, población participante, evidencias disponibles y
-            necesidades. La selección final se coordina con el distrito.
+            {c.intro2}
           </p>
         </div>
 
@@ -167,16 +148,16 @@ export default function ConvocatoriaSection({
           {status === 'success' ? (
             <div className="mt-6 rounded-2xl border border-emerald-200 bg-white p-8">
               <CheckCircle2 className="w-8 h-8 text-[#3B6E5C]" />
-              <h3 className="mt-3 text-xl font-bold">Recibimos tu registro.</h3>
+              <h3 className="mt-3 text-xl font-bold">{c.successTitle}</h3>
               <p className="mt-2 text-sm text-slate-600">
-                Te contactaremos para coordinar los siguientes pasos.
+                {c.successText}
               </p>
               <button
                 type="button"
                 onClick={() => setStatus('idle')}
                 className="mt-5 text-sm font-semibold text-[#003B73] underline underline-offset-4 cursor-pointer"
               >
-                Enviar otro registro
+                {c.sendAnother}
               </button>
             </div>
           ) : (
@@ -188,71 +169,78 @@ export default function ConvocatoriaSection({
               <input
                 type="hidden"
                 name="tipo"
-                value={activeRole === 'club' ? 'Proyecto de club' : 'Aliado / apoyo'}
+                value={
+                  activeRole === 'club'
+                    ? es.convocatoria.typeClub
+                    : es.convocatoria.typeAlly
+                }
               />
+              <input type="hidden" name="idioma" value={lang} />
               <input
                 type="hidden"
                 name="_subject"
                 value={
                   activeRole === 'club'
-                    ? 'Kilómetros con Propósito · Nueva postulación de proyecto'
-                    : 'Kilómetros con Propósito · Nuevo aliado'
+                    ? es.convocatoria.subjectClub
+                    : es.convocatoria.subjectAlly
                 }
               />
 
               {activeRole === 'club' ? (
                 <>
-                  <Field label="Club u organización responsable *">
+                  <Field label={c.organization}>
                     <input name="organizacion" required className={inputClass} />
                   </Field>
-                  <Field label="Ubicación (ciudad, provincia) *">
+                  <Field label={c.location}>
                     <input name="ubicacion" required className={inputClass} />
                   </Field>
-                  <Field label="Nombre del proyecto *" className="sm:col-span-2">
+                  <Field label={c.projectName} className="sm:col-span-2">
                     <input name="proyecto" required className={inputClass} />
                   </Field>
-                  <Field label="Fase del proyecto *">
+                  <Field label={c.phase}>
                     <select name="fase" required defaultValue="" className={inputClass}>
                       <option value="" disabled>
-                        Selecciona
+                        {c.select}
                       </option>
-                      {PROJECT_PHASES.map((p) => (
-                        <option key={p}>{p}</option>
+                      {es.convocatoria.phases.map((p, i) => (
+                        <option key={p} value={p}>
+                          {c.phases[i]}
+                        </option>
                       ))}
                     </select>
                   </Field>
-                  <Field label="Formato de interés">
+                  <Field label={c.interestFormat}>
                     <select
                       name="formato"
                       value={format}
                       onChange={(e) => setFormat(e.target.value)}
                       className={inputClass}
                     >
-                      <option value="">Que lo sugiera el equipo</option>
-                      {PRODUCTION_FORMATS.map((f) => (
+                      <option value="">{c.teamSuggests}</option>
+                      {FORMAT_IDS.map((f) => (
                         <option key={f.id} value={f.id}>
-                          {f.name}
+                          {t.formats.items[f.id].name}
                         </option>
                       ))}
                     </select>
                   </Field>
-                  <Field label="Problema que atiende *" className="sm:col-span-2">
+                  <Field label={c.problem} className="sm:col-span-2">
                     <textarea name="problema" required rows={3} className={inputClass} />
                   </Field>
-                  <Field label="Población participante">
+                  <Field label={c.population}>
                     <input name="poblacion" className={inputClass} />
                   </Field>
-                  <Field label="Evidencias disponibles">
+                  <Field label={c.evidence}>
                     <input
                       name="evidencias"
-                      placeholder="Fotos, informes, testimonios…"
+                      placeholder={c.evidencePlaceholder}
                       className={inputClass}
                     />
                   </Field>
                   <fieldset className="sm:col-span-2">
-                    <legend className={labelClass}>¿Qué necesita el proyecto?</legend>
+                    <legend className={labelClass}>{c.projectNeeds}</legend>
                     <div className="flex flex-wrap gap-x-6 gap-y-2">
-                      {PROJECT_NEEDS.map((n) => (
+                      {es.convocatoria.needs.map((n, i) => (
                         <label key={n} className="flex items-center gap-2 text-sm text-slate-700">
                           <input
                             type="checkbox"
@@ -260,7 +248,7 @@ export default function ConvocatoriaSection({
                             value={n}
                             className="w-4 h-4 accent-[#003B73]"
                           />
-                          {n}
+                          {c.needs[i]}
                         </label>
                       ))}
                     </div>
@@ -268,47 +256,51 @@ export default function ConvocatoriaSection({
                 </>
               ) : (
                 <>
-                  <Field label="Entidad o nombre *">
+                  <Field label={c.entity}>
                     <input name="entidad" required className={inputClass} />
                   </Field>
-                  <Field label="Tipo de aliado *">
+                  <Field label={c.allyType}>
                     <select name="tipo_aliado" required defaultValue="" className={inputClass}>
                       <option value="" disabled>
-                        Selecciona
+                        {c.select}
                       </option>
-                      {ALLY_TYPES.map((t) => (
-                        <option key={t}>{t}</option>
+                      {es.convocatoria.allyTypes.map((a, i) => (
+                        <option key={a} value={a}>
+                          {c.allyTypes[i]}
+                        </option>
                       ))}
                     </select>
                   </Field>
-                  <Field label="Modalidad de apoyo *" className="sm:col-span-2">
+                  <Field label={c.supportMode} className="sm:col-span-2">
                     <select name="modalidad" required defaultValue="" className={inputClass}>
                       <option value="" disabled>
-                        Selecciona
+                        {c.select}
                       </option>
-                      {SUPPORT_MODALITIES.map((m) => (
-                        <option key={m.name}>{m.name}</option>
+                      {es.support.modalities.map((m, i) => (
+                        <option key={m.name} value={m.name}>
+                          {t.support.modalities[i].name}
+                        </option>
                       ))}
                     </select>
                   </Field>
-                  <Field label="Mensaje" className="sm:col-span-2">
+                  <Field label={c.message} className="sm:col-span-2">
                     <textarea
                       name="mensaje"
                       rows={3}
-                      placeholder="Cuéntanos qué te gustaría aportar"
+                      placeholder={c.messagePlaceholder}
                       className={inputClass}
                     />
                   </Field>
                 </>
               )}
 
-              <Field label="Persona de contacto *">
+              <Field label={c.contactPerson}>
                 <input name="contacto" required className={inputClass} />
               </Field>
-              <Field label="Correo electrónico *">
+              <Field label={c.email}>
                 <input type="email" name="email" required className={inputClass} />
               </Field>
-              <Field label="Teléfono / WhatsApp">
+              <Field label={c.phone}>
                 <input type="tel" name="telefono" className={inputClass} />
               </Field>
 
@@ -320,8 +312,7 @@ export default function ConvocatoriaSection({
                   required
                   className="mt-0.5 w-4 h-4 accent-[#003B73] shrink-0"
                 />
-                Acepto que estos datos se usen únicamente para coordinar esta
-                convocatoria.
+                {c.consent}
               </label>
 
               {status === 'error' && errorMessage && (
@@ -345,7 +336,7 @@ export default function ConvocatoriaSection({
                   ) : (
                     <ArrowRight className="w-4 h-4" />
                   )}
-                  {activeRole === 'club' ? 'Enviar postulación' : 'Enviar'}
+                  {activeRole === 'club' ? c.submitClub : c.submitAlly}
                 </button>
               </div>
             </form>
