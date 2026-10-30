@@ -1,24 +1,34 @@
 import type {Metadata} from 'next';
-import {Outfit, Plus_Jakarta_Sans, JetBrains_Mono} from 'next/font/google';
+import localFont from 'next/font/local';
+import {LanguageProvider} from '@/lib/i18n/context';
 import './globals.css';
 
-const outfit = Outfit({
-  subsets: ['latin'],
-  weight: ['600', '700'],
+const outfit = localFont({
+  src: [
+    {path: '../node_modules/@fontsource/outfit/files/outfit-latin-600-normal.woff2', weight: '600', style: 'normal'},
+    {path: '../node_modules/@fontsource/outfit/files/outfit-latin-700-normal.woff2', weight: '700', style: 'normal'},
+  ],
   variable: '--font-outfit',
   display: 'swap',
 });
 
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+const plusJakarta = localFont({
+  src: [
+    {path: '../node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-400-normal.woff2', weight: '400', style: 'normal'},
+    {path: '../node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-500-normal.woff2', weight: '500', style: 'normal'},
+    {path: '../node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-600-normal.woff2', weight: '600', style: 'normal'},
+    {path: '../node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff2', weight: '700', style: 'normal'},
+  ],
   variable: '--font-jakarta',
   display: 'swap',
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
+const jetbrainsMono = localFont({
+  src: [
+    {path: '../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2', weight: '400', style: 'normal'},
+    {path: '../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff2', weight: '500', style: 'normal'},
+    {path: '../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-600-normal.woff2', weight: '600', style: 'normal'},
+  ],
   variable: '--font-mono',
   display: 'swap',
 });
@@ -52,7 +62,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         className="bg-[#F8FAFC] text-[#0A2540] antialiased selection:bg-[#F59E0B]/20 selection:text-[#0A2540]"
         style={{fontFamily: 'var(--font-jakarta), sans-serif'}}
       >
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

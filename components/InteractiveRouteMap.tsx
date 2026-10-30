@@ -2,7 +2,8 @@
 
 import React, {useState} from 'react';
 import {MapPin} from 'lucide-react';
-import {ROUTE_MONTHS, WEEKEND_PLAN} from '@/lib/expedition-data';
+import {ROUTE_MONTHS} from '@/lib/expedition-data';
+import {useLang} from '@/lib/i18n/context';
 
 // Proyección lineal lon/lat → viewBox. Ecuador continental cabe en
 // lon −81.2…−75.0 y lat 1.6…−5.1, cerca del ecuador, así que la
@@ -53,33 +54,36 @@ const MAIN_PATH =
 
 const EQUATOR_Y = project(0, 0).y;
 
-const REGION_LABELS = [
-  {label: 'COSTA', ...project(-80.3, -2.3)},
-  {label: 'SIERRA', ...project(-79.2, -3.6)},
-  {label: 'AMAZONÍA', ...project(-76.75, -1.7)},
+const REGION_POSITIONS = [
+  {key: 'coast' as const, ...project(-80.3, -2.3)},
+  {key: 'andes' as const, ...project(-79.2, -3.6)},
+  {key: 'amazon' as const, ...project(-76.75, -1.7)},
 ];
 
 export default function InteractiveRouteMap() {
+  const {t} = useLang();
   const [selectedMonth, setSelectedMonth] = useState(1);
-  const active =
-    ROUTE_MONTHS.find((m) => m.month === selectedMonth) ?? ROUTE_MONTHS[0];
+  const activeIndex = Math.max(
+    0,
+    ROUTE_MONTHS.findIndex((m) => m.month === selectedMonth)
+  );
+  const active = ROUTE_MONTHS[activeIndex];
+  const activeText = t.route.months[activeIndex];
 
   return (
     <section id="ruta" className="py-20 md:py-28 bg-white border-b border-slate-200">
       <div className="max-w-[1120px] mx-auto px-4 sm:px-6">
         <p className="text-xs font-mono uppercase tracking-wider text-[#3B6E5C] mb-3">
-          03 · Ruta y calendario
+          {t.route.index}
         </p>
         <h2
           className="text-3xl md:text-4xl font-bold tracking-tight text-balance"
           style={{fontFamily: 'var(--font-outfit), sans-serif'}}
         >
-          Quito como base inicial, cuatro fines de semana al mes.
+          {t.route.title}
         </h2>
         <p className="mt-4 max-w-2xl text-base text-slate-600 leading-relaxed">
-          Las ciudades son opciones preliminares, no visitas confirmadas. Un
-          quinto fin de semana, cuando exista, queda como reserva para
-          reprogramaciones o descanso.
+          {t.route.intro}
         </p>
 
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -89,7 +93,7 @@ export default function InteractiveRouteMap() {
               viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
               className="w-full h-auto select-none"
               role="group"
-              aria-label="Mapa de la ruta propuesta por Ecuador continental"
+              aria-label={t.route.mapLabel}
             >
               <path
                 d={OUTLINE_PATH}
@@ -116,12 +120,12 @@ export default function InteractiveRouteMap() {
                 fontSize="11"
                 fontFamily="monospace"
               >
-                LÍNEA EQUINOCCIAL 0°
+                {t.route.equator}
               </text>
 
-              {REGION_LABELS.map((r) => (
+              {REGION_POSITIONS.map((r) => (
                 <text
-                  key={r.label}
+                  key={r.key}
                   x={r.x}
                   y={r.y}
                   textAnchor="middle"
@@ -130,7 +134,7 @@ export default function InteractiveRouteMap() {
                   fontFamily="monospace"
                   letterSpacing="2"
                 >
-                  {r.label}
+                  {t.route.regions[r.key]}
                 </text>
               ))}
 
@@ -153,14 +157,14 @@ export default function InteractiveRouteMap() {
                 />
               )}
 
-              {NODES.map((node) => {
+              {NODES.map((node, i) => {
                 const isSelected = node.month === selectedMonth;
                 return (
                   <g
                     key={node.month}
                     role="button"
                     tabIndex={0}
-                    aria-label={`Mes ${node.month}: ${node.zone}`}
+                    aria-label={t.route.monthNodeLabel(node.month, t.route.months[i].zone)}
                     aria-pressed={isSelected}
                     onClick={() => setSelectedMonth(node.month)}
                     onKeyDown={(e) => {
@@ -207,18 +211,18 @@ export default function InteractiveRouteMap() {
             <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-slate-300">
               <span className="flex items-center gap-2">
                 <span className="inline-block w-5 h-0.5 bg-[#F59E0B]" />
-                Meses 1 a 5
+                {t.route.legendMain}
               </span>
               <span className="flex items-center gap-2">
                 <span className="inline-block w-5 border-t-2 border-dashed border-[#10B981]" />
-                Mes 6 opcional
+                {t.route.legendOptional}
               </span>
             </div>
           </div>
 
           {/* Detalle del mes */}
           <div className="lg:col-span-6">
-            <div className="flex flex-wrap gap-2" role="tablist" aria-label="Meses de la ruta">
+            <div className="flex flex-wrap gap-2" role="tablist" aria-label={t.route.tabsLabel}>
               {ROUTE_MONTHS.map((m) => {
                 const isSelected = m.month === selectedMonth;
                 return (
@@ -234,8 +238,8 @@ export default function InteractiveRouteMap() {
                         : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                     }`}
                   >
-                    Mes {m.month}
-                    {m.optional ? ' · opc.' : ''}
+                    {t.route.month} {m.month}
+                    {m.optional ? ` · ${t.route.optionalShort}` : ''}
                   </button>
                 );
               })}
@@ -243,28 +247,28 @@ export default function InteractiveRouteMap() {
 
             <div className="mt-6 border-t border-slate-200 pt-6" role="tabpanel">
               <p className="text-xs font-mono uppercase tracking-wider text-slate-500">
-                Mes {active.month}
-                {active.optional ? ' · opcional' : ''}
+                {t.route.month} {active.month}
+                {active.optional ? ` · ${t.route.optionalLong}` : ''}
               </p>
               <h3
                 className="mt-1 text-2xl md:text-3xl font-bold"
                 style={{fontFamily: 'var(--font-outfit), sans-serif'}}
               >
-                {active.zone}
+                {activeText.zone}
               </h3>
               <p className="mt-3 flex items-start gap-2 text-sm text-slate-600">
                 <MapPin className="w-4 h-4 text-[#F59E0B] shrink-0 mt-0.5" />
-                <span>Base posible: {active.base}</span>
+                <span>
+                  {t.route.possibleBase} {activeText.base}
+                </span>
               </p>
               <p className="mt-4 text-base text-slate-800 leading-relaxed">
-                {active.weekendUse}
+                {activeText.weekendUse}
               </p>
             </div>
 
             <p className="mt-8 text-sm text-slate-600 leading-relaxed">
-              Se presupuestan hasta 1.200 km mensuales, sujetos a la ruta
-              efectiva. La ruta supone cambiar de base entre regiones; las
-              visitas lejanas se reducen o reprograman si no caben en dos días.
+              {t.route.kmNote}
             </p>
           </div>
         </div>
@@ -275,22 +279,22 @@ export default function InteractiveRouteMap() {
             className="text-xl font-bold"
             style={{fontFamily: 'var(--font-outfit), sans-serif'}}
           >
-            Distribución mensual de referencia
+            {t.route.distributionTitle}
           </h3>
           <div className="mt-5 overflow-x-auto">
             <table className="w-full min-w-[560px] text-sm text-left">
               <thead>
                 <tr className="border-b border-slate-300 text-xs font-mono uppercase tracking-wider text-slate-500">
-                  <th className="py-3 pr-4 font-medium w-24">Fin de semana</th>
-                  <th className="py-3 pr-4 font-medium">Sábado</th>
-                  <th className="py-3 font-medium">Domingo</th>
+                  <th className="py-3 pr-4 font-medium w-24">{t.route.weekendCol}</th>
+                  <th className="py-3 pr-4 font-medium">{t.route.saturdayCol}</th>
+                  <th className="py-3 font-medium">{t.route.sundayCol}</th>
                 </tr>
               </thead>
               <tbody>
-                {WEEKEND_PLAN.map((w) => (
-                  <tr key={w.weekend} className="border-b border-slate-200 align-top">
+                {t.route.weekendPlan.map((w, i) => (
+                  <tr key={i} className="border-b border-slate-200 align-top">
                     <td className="py-3 pr-4 font-mono font-semibold text-[#003B73]">
-                      {w.weekend}
+                      {i + 1}
                     </td>
                     <td className="py-3 pr-4 text-slate-700">{w.saturday}</td>
                     <td className="py-3 text-slate-700">{w.sunday}</td>
@@ -300,9 +304,7 @@ export default function InteractiveRouteMap() {
             </table>
           </div>
           <p className="mt-4 text-sm text-slate-600 leading-relaxed">
-            No se exigirá conducir y producir al mismo tiempo. Si falta una
-            autorización o validación, la publicación pasa al siguiente fin de
-            semana.
+            {t.route.distributionNote}
           </p>
         </div>
       </div>
